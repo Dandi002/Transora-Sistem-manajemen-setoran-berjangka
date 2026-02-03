@@ -1,0 +1,135 @@
+<x-app-layout>
+    <div class="flex h-screen bg-gray-50">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white shadow-lg flex flex-col">
+            <!-- Logo -->
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-gradient-to-br from-orange-400 to-orange-500 rounded-lg p-2">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold text-gray-800">Dashboard</h1>
+                        <p class="text-xs text-gray-500">Owner Panel</p>
+                    </div>
+                </div>
+            </div>
+
+            @include('layouts.sidebar')
+
+            <!-- User Info -->
+            <div class="p-4 border-t border-gray-200">
+                <div class="flex items-center space-x-3 px-4 py-3 bg-gray-50 rounded-lg">
+                    <div
+                        class="bg-gradient-to-br from-orange-400 to-orange-500 rounded-full w-10 h-10
+                               flex items-center justify-center text-white font-bold">
+                        {{ substr(auth()->user()->name, 0, 1) }}
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm font-semibold text-gray-800">{{ auth()->user()->name }}</p>
+                        <p class="text-xs text-gray-500">Owner</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <main class="flex-1 overflow-y-auto p-8">
+
+                <!-- Header -->
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Edit User</h2>
+                    <p class="text-sm text-gray-500">Perbarui akun pengguna</p>
+                </div>
+
+                <!-- Card -->
+                <div class="bg-white rounded-xl shadow-md p-6 max-w-xl">
+
+                    {{-- ERROR VALIDATION --}}
+                    @if ($errors->any())
+                        <div class="mb-4 bg-red-100 text-red-700 px-4 py-3 rounded-lg">
+                            <ul class="list-disc list-inside text-sm">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <!-- FORM -->
+                    <form action="{{ route('users.update', $user) }}"
+                          method="POST" class="space-y-5">
+                        @csrf
+                        @method('PUT')
+
+                        <!-- Nama -->
+                        <div>
+                            <label class="block mb-2.5 text-sm font-medium text-heading">Nama</label>
+                            <input type="text" name="name" required
+                                   value="{{ old('name', $user->name) }}"
+                                   class="block w-full px-3 py-2.5 bg-neutral-secondary-medium
+                                          border border-default-medium rounded-base text-sm
+                                          focus:ring-brand focus:border-brand">
+                        </div>
+
+                        <!-- Email -->
+                        <div>
+                            <label class="block mb-2.5 text-sm font-medium text-heading">Email</label>
+                            <input type="email" name="email" required
+                                   value="{{ old('email', $user->email) }}"
+                                   class="block w-full px-3 py-2.5 bg-neutral-secondary-medium
+                                          border border-default-medium rounded-base text-sm
+                                          focus:ring-brand focus:border-brand">
+                        </div>
+
+                        <!-- Password -->
+                        <div>
+                            <label class="block mb-2.5 text-sm font-medium text-heading">
+                                Password <span class="text-xs text-gray-400">(opsional)</span>
+                            </label>
+                            <input type="password" name="password"
+                                   class="block w-full px-3 py-2.5 bg-neutral-secondary-medium
+                                          border border-default-medium rounded-base text-sm
+                                          focus:ring-brand focus:border-brand"
+                                   placeholder="Kosongkan jika tidak diubah">
+                        </div>
+
+                        <!-- Role -->
+                        <div>
+                            <label class="block mb-2.5 text-sm font-medium text-heading">Role</label>
+                            <select name="role"
+                                    class="block w-full px-3 py-2.5 bg-neutral-secondary-medium
+                                           border border-default-medium rounded-base text-sm
+                                           focus:ring-brand focus:border-brand">
+                                <option value="owner"  @selected($user->role === 'owner')>Owner</option>
+                                <option value="admin"  @selected($user->role === 'admin')>Admin</option>
+                                <option value="seller" @selected($user->role === 'seller')>Seller</option>
+                                <option value="user"   @selected($user->role === 'user')>User</option>
+                            </select>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="flex justify-end gap-3 pt-4">
+                            <a href="{{ route('users.index') }}"
+                               class="px-4 py-2 rounded-lg border border-gray-300
+                                      text-gray-600 hover:bg-gray-100">
+                                Batal
+                            </a>
+                            <button type="submit"
+                                    class="px-4 py-2 rounded-lg bg-orange-500
+                                           text-white hover:bg-orange-600">
+                                Update
+                            </button>
+                        </div>
+                    </form>
+                    <!-- END FORM -->
+
+                </div>
+            </main>
+        </div>
+    </div>
+</x-app-layout>

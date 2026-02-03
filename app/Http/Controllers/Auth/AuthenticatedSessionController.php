@@ -29,11 +29,19 @@ class AuthenticatedSessionController extends Controller
 
     $user = Auth::user();
 
+    if (! $user->is_active) {
+    Auth::logout();
+
+    return back()->withErrors([
+        'email' => 'Akun Anda sedang dinonaktifkan',
+    ]);
+}
+
     if ($user->role === 'owner') {
         return redirect()->intended('/owner/dashboard');
     }
 
-    if ($user->role === 'seller') {
+    if ($user->role === 'staff') {
         return redirect()->intended('/seller/dashboard');
     }
 
