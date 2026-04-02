@@ -1,53 +1,14 @@
-    <x-app-layout>
-        <div class="flex h-screen bg-gray-50">
-            <!-- Sidebar -->
-            <aside class="w-64 bg-white shadow-lg flex flex-col">
-                <!-- Logo -->
-                <div class="p-6 border-b border-gray-200">
-                    <div class="flex items-center space-x-3">
-                        <div class="bg-gradient-to-br from-orange-400 to-orange-500 rounded-lg p-2">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16"/>
-                            </svg>
-                        </div>
-                        <div>
-                            <h1 class="text-lg font-bold text-gray-800">Dashboard</h1>
-                            <p class="text-xs text-gray-500">Owner Panel</p>
-                        </div>
-                    </div>
-                </div>
+@extends('layouts.app')
 
-                <!-- Navigation -->
-                @include('layouts.sidebar')
+@section('content')
 
-                <!-- User Info -->
-                <div class="p-4 border-t border-gray-200">
-                    <div class="flex items-center space-x-3 px-4 py-3 bg-gray-50 rounded-lg">
-                        <div
-                            class="bg-gradient-to-br from-orange-400 to-orange-500 rounded-full w-10 h-10 flex items-center justify-center text-white font-bold">
-                            {{ substr(auth()->user()->name, 0, 1) }}
-                        </div>
-                        <div class="flex-1">
-                            <p class="text-sm font-semibold text-gray-800">{{ auth()->user()->name }}</p>
-                            <p class="text-xs text-gray-500">Owner</p>
-                        </div>
-                    </div>
-                </div>
-            </aside>
+<h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
+    Tambah User
+</h2>
 
-            <!-- Main Content -->
-            <div class="flex-1 flex flex-col overflow-hidden">
-                <main class="flex-1 overflow-y-auto p-8">
+<div class="w-full max-w-5xl px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
 
-                    <!-- Header -->
-                    <div class="mb-6">
-                        <h2 class="text-2xl font-bold text-gray-800">Tambah User</h2>
-                        <p class="text-sm text-gray-500">Buat akun pengguna baru</p>
-                    </div>
-
-                    <!-- Card -->
-                    <div class="bg-white rounded-xl shadow-md p-6 max-w-xl">
+    {{-- ERROR --}}
     @if ($errors->any())
         <div class="mb-4 bg-red-100 text-red-700 px-4 py-3 rounded-lg">
             <ul class="list-disc list-inside text-sm">
@@ -57,70 +18,135 @@
             </ul>
         </div>
     @endif
-                        <!-- FORM -->
-                        <form action="{{ route('users.store') }}" method="POST" class="space-y-5">
-                            @csrf
 
-                            <!-- Nama -->
-                            <div>
-                                <label class="block mb-2.5 text-sm font-medium text-heading">Nama</label>
-                                <input type="text" name="name" required
-                                    class="block w-full px-3 py-2.5 bg-neutral-secondary-medium
-                                            border border-default-medium rounded-base text-sm
-                                            focus:ring-brand focus:border-brand"
-                                    placeholder="Nama lengkap">
-                            </div>
+    <form action="{{ route('owner.users.store') }}" method="POST">
+        @csrf
 
-                            <!-- Email -->
-                            <div>
-                                <label class="block mb-2.5 text-sm font-medium text-heading">Email</label>
-                                <input type="email" name="email" required
-                                    class="block w-full px-3 py-2.5 bg-neutral-secondary-medium
-                                            border border-default-medium rounded-base text-sm
-                                            focus:ring-brand focus:border-brand"
-                                    placeholder="email@domain.com">
-                            </div>
+        {{-- NAME --}}
+        <label class="block text-sm">
+            <span class="text-gray-700 dark:text-gray-400">Name</span>
+            <input
+                type="text"
+                name="name"
+                required
+                value="{{ old('name') }}"
+                class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 
+                       focus:border-purple-400 focus:outline-none focus:shadow-outline-purple 
+                       dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                placeholder="Masukkan Nama"
+            />
+        </label>
 
-                            <!-- Password -->
-                            <div>
-                                <label class="block mb-2.5 text-sm font-medium text-heading">Password</label>
-                                <input type="password" name="password" required
-                                    class="block w-full px-3 py-2.5 bg-neutral-secondary-medium
-                                            border border-default-medium rounded-base text-sm
-                                            focus:ring-brand focus:border-brand"
-                                    placeholder="••••••••">
-                            </div>
+        {{-- EMAIL --}}
+        <label class="block mt-4 text-sm">
+            <span class="text-gray-700 dark:text-gray-400">Email</span>
+            <input
+                type="email"
+                name="email"
+                required
+                value="{{ old('email') }}"
+                class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 
+                       focus:border-purple-400 focus:outline-none focus:shadow-outline-purple 
+                       dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                placeholder="email@domain.com"
+            />
+        </label>
 
-                            <!-- Role -->
-                            <div>
-                                <label class="block mb-2.5 text-sm font-medium text-heading">Role</label>
-                                <select name="role"
-                                        class="block w-full px-3 py-2.5 bg-neutral-secondary-medium
-                                            border border-default-medium rounded-base text-sm
-                                            focus:ring-brand focus:border-brand">
-                                    <option value="">Pilih role</option>
-                                    <option value="owner">Owner</option>
-                                    <option value="staff">Staff</option>
-                                    <option value="user">User</option>
-                                </select>
-                            </div>
+        {{-- PASSWORD --}}
+        <label class="block mt-4 text-sm">
+            <span class="text-gray-700 dark:text-gray-400">Password</span>
+            <input
+                type="password"
+                name="password"
+                required
+                class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 
+                       focus:border-purple-400 focus:outline-none focus:shadow-outline-purple 
+                       dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                placeholder="••••••••"
+            />
+        </label>
 
-                            <!-- Actions -->
-                            <div class="flex justify-end gap-3 pt-4">
-                                <a href="{{ route('users.index') }}"
-                                class="px-4 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100">
-                                    Batal
-                                </a>
-                                <button type="submit"
-                                        class="px-4 py-2 rounded-lg bg-orange-500 text-white hover:bg-orange-600">
-                                    Simpan
-                                </button>
-                            </div>
-                        </form>
-                        <!-- END FORM -->
+        {{-- ROLE --}}
+        <label class="block mt-4 text-sm">
+            <span class="text-gray-700 dark:text-gray-400">Role</span>
+            <select
+                name="role"
+                id="role"
+                class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 
+                       dark:bg-gray-700 form-select focus:border-purple-400 
+                       focus:outline-none focus:shadow-outline-purple 
+                       dark:focus:shadow-outline-gray"
+            >
+                <option value="">Pilih role</option>
+                <option value="owner" @selected(old('role') === 'owner')>Owner</option>
+                <option value="staff" @selected(old('role') === 'staff')>Staff</option>
+                <option value="pengguna" @selected(old('role') === 'pengguna')>Pengguna</option>
+            </select>
+        </label>
 
-                    </div>
-                </main>
-            </div>
+        <label id="saving-plan-wrapper" class="block mt-4 text-sm {{ old('role') === 'pengguna' ? '' : 'hidden' }}">
+            <span class="text-gray-700 dark:text-gray-400">Paket Setoran</span>
+            <select
+                name="saving_plan_id"
+                id="saving_plan_id"
+                class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 
+                       dark:bg-gray-700 form-select focus:border-purple-400 
+                       focus:outline-none focus:shadow-outline-purple 
+                       dark:focus:shadow-outline-gray"
+            >
+                <option value="">Pilih paket setoran</option>
+                @foreach ($savingPlans as $plan)
+                    <option value="{{ $plan->id }}" @selected((string) old('saving_plan_id') === (string) $plan->id)>
+                        {{ $plan->name }} - Rp {{ number_format($plan->weekly_amount, 0, ',', '.') }}/minggu
+                    </option>
+                @endforeach
+            </select>
+        </label>
+
+        {{-- ACTION --}}
+        <div class="flex justify-end gap-3 mt-6">
+            <a href="{{ route('owner.users.index') }}"
+               class="px-4 py-2 text-sm font-medium leading-5 text-gray-600 
+                      transition-colors duration-150 border border-gray-300 rounded-lg 
+                      hover:border-gray-500 focus:outline-none focus:shadow-outline-gray">
+                Batal
+            </a>
+
+            <button type="submit"
+                class="px-4 py-2 text-sm font-medium leading-5 text-white 
+                       transition-colors duration-150 bg-purple-600 
+                       border border-transparent rounded-lg 
+                       hover:bg-purple-700 focus:outline-none 
+                       focus:shadow-outline-purple">
+                Simpan
+            </button>
         </div>
-    </x-app-layout>
+
+    </form>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const roleSelect = document.getElementById('role');
+    const wrapper = document.getElementById('saving-plan-wrapper');
+
+    if (!roleSelect || !wrapper) {
+        return;
+    }
+
+    const toggleSavingPlan = () => {
+        if (roleSelect.value === 'pengguna') {
+            wrapper.classList.remove('hidden');
+            return;
+        }
+
+        wrapper.classList.add('hidden');
+    };
+
+    roleSelect.addEventListener('change', toggleSavingPlan);
+    toggleSavingPlan();
+});
+</script>
+
+@endsection

@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('phone')->unique();
+            $table->string('phone')->unique()->nullable();
             $table->text('alamat')->nullable();
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending')->after('role');
             $table->foreignId('staff_id')->nullable()->constrained('users');

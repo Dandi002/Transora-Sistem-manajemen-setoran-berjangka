@@ -3,14 +3,17 @@
 namespace App\Models;
 
 use App\Models\Customer;
+use App\Models\SavingPlan;
 use App\Models\Transaksi;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -27,6 +30,9 @@ class User extends Authenticatable
         'is_active',
         'status',
         'staff_id',
+        'assigned_staff_id',
+        'saving_plan_id',
+
 
 
     ];
@@ -38,6 +44,25 @@ class User extends Authenticatable
 public function users()
 {
     return $this->hasMany(User::class, 'staff_id');
+}
+public function assignedStaff()
+{
+    return $this->belongsTo(User::class, 'assigned_staff_id');
+}
+
+public function monitoredUsers()
+{
+    return $this->hasMany(User::class, 'assigned_staff_id');
+}
+
+public function savingPlan()
+{
+    return $this->belongsTo(SavingPlan::class);
+}
+
+public function weeklyProgress()
+{
+    return $this->hasMany(WeeklyProgress::class);
 }
 
     /**

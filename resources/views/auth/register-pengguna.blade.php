@@ -47,7 +47,7 @@
                     </div>
                 @endif
 
-                <form method="POST" action="/register" class="space-y-6">
+                <form method="POST" action="/user-register" class="space-y-6">
                     @csrf
 
                     <!-- Name -->
@@ -66,6 +66,23 @@
                         />
                         <x-input-error :messages="$errors->get('name')" class="mt-2" />
                     </div>
+
+                    <!-- Email -->
+<div>
+    <x-input-label for="email" value="Email" />
+    <x-text-input
+        id="email"
+        type="email"
+        name="email"
+        :value="old('email')"
+        required
+        placeholder="Masukkan email"
+        class="block mt-1 w-full rounded-xl bg-white border-gray-300 
+            focus:border-emerald-600 focus:ring-emerald-600"
+    />
+    <x-input-error :messages="$errors->get('email')" class="mt-2" />
+</div>
+
 
                     <!-- Phone -->
                     <div>
@@ -97,6 +114,25 @@
                                 shadow-sm resize-none"
                         >{{ old('alamat') }}</textarea>
                         <x-input-error :messages="$errors->get('alamat')" class="mt-2" />
+                    </div>
+
+                    <!-- Paket Setoran -->
+                    <div>
+                        <x-input-label for="saving_plan_id" value="Paket Setoran Mingguan" />
+                        <select
+                            id="saving_plan_id"
+                            name="saving_plan_id"
+                            class="block mt-1 w-full rounded-xl bg-white border-gray-300 
+                                focus:border-emerald-600 focus:ring-emerald-600"
+                        >
+                            <option value="">Pilih paket setoran</option>
+                            @foreach (($savingPlans ?? collect()) as $plan)
+                                <option value="{{ $plan->id }}" @selected((string) old('saving_plan_id') === (string) $plan->id)>
+                                    {{ $plan->name }} - Rp {{ number_format($plan->weekly_amount, 0, ',', '.') }}/minggu
+                                </option>
+                            @endforeach
+                        </select>
+                        <x-input-error :messages="$errors->get('saving_plan_id')" class="mt-2" />
                     </div>
 
                     <!-- Password -->

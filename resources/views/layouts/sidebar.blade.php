@@ -1,117 +1,108 @@
-<nav class="flex-1 p-4 space-y-6 overflow-y-auto">
+<aside class="z-20 hidden w-64 overflow-y-auto bg-white dark:bg-gray-800 md:block flex-shrink-0">
+  <div class="py-4 text-gray-500 dark:text-gray-400">
+    <a class="ml-6 text-lg font-bold text-gray-800 dark:text-gray-200" href="#">
+      Windmill
+    </a>
 
-    <!-- ================= MAIN ================= -->
-    <div>
-        <p class="px-4 mb-2 text-xs font-semibold text-gray-400 uppercase">
-            Main
-        </p>
+    @php
+      $role = auth()->user()->role ?? null;
+    @endphp
 
-        <a href="{{ route('dashboard') }}"
-           class="flex items-center space-x-3 px-4 py-3
-                  bg-gradient-to-r from-orange-400 to-orange-500
-                  text-white rounded-lg shadow-md">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M3 12l2-2 7-7 7 7M5 10v10a1 1 0 001 1h3"/>
+    <ul class="mt-6">
+      @if($role === 'owner')
+        <li class="relative px-6 py-3">
+          @if(request()->routeIs('owner.dashboard'))
+            <span class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"></span>
+          @endif
+          <a
+            class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 {{ request()->routeIs('owner.dashboard') ? 'text-gray-800 dark:text-gray-100' : '' }}"
+            href="{{ route('owner.dashboard') }}"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
             </svg>
-            <span class="font-medium">Dashboard</span>
-        </a>
-    </div>
+            <span class="ml-4">Dashboard</span>
+          </a>
+        </li>
 
-    <!-- ================= OWNER ================= -->
-    @if(auth()->user()->role === 'owner')
-        <div>
-            <p class="px-4 mb-2 text-xs font-semibold text-gray-400 uppercase">
-                Master Data
-            </p>
+        <li class="relative px-6 py-3">
+          @if(request()->routeIs('owner.users.*'))
+            <span class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"></span>
+          @endif
+          <a
+            class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 {{ request()->routeIs('owner.users.*') ? 'text-gray-800 dark:text-gray-100' : '' }}"
+            href="{{ route('owner.users.index') }}"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+            <span class="ml-4">Manajemen Akun</span>
+          </a>
+        </li>
 
-            <a href="{{ route('users.index') }}"
-               class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M20 7l-8-4-8 4v10l8 4 8-4V7z"/>
-                </svg>
-                <span class="font-medium">Users</span>
-            </a>
-        </div>
+        <li class="relative px-6 py-3">
+          @if(request()->routeIs('owner.staff.*'))
+            <span class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"></span>
+          @endif
+          <a
+            class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 {{ request()->routeIs('owner.staff.*') ? 'text-gray-800 dark:text-gray-100' : '' }}"
+            href="{{ route('owner.staff.index') }}"
+          >
+            <svg class="w-5 h-5" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+              <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+            </svg>
+            <span class="ml-4">Staff</span>
+          </a>
+        </li>
 
-        <div>
-            <p class="px-4 mb-2 text-xs font-semibold text-gray-400 uppercase">
-                Laporan
-            </p>
+        <li class="relative px-6 py-3">
+          @if(request()->routeIs('owner.saving-plans.*'))
+            <span class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"></span>
+          @endif
+          <a
+            class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 {{ request()->routeIs('owner.saving-plans.*') ? 'text-gray-800 dark:text-gray-100' : '' }}"
+            href="{{ route('owner.saving-plans.index') }}"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-10v2m0 12v2M4 12a8 8 0 1016 0 8 8 0 10-16 0z"></path>
+            </svg>
+            <span class="ml-4">Master Paket</span>
+          </a>
+        </li>
+      @endif
 
-            <a href="#"
-               class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M9 17v-2m3 2v-4m3 4v-6"/>
-                </svg>
-                <span class="font-medium">Reports</span>
-            </a>
-        </div>
-    @endif
+      @if($role === 'staff')
+        <li class="relative px-6 py-3">
+          @if(request()->routeIs('staff.dashboard'))
+            <span class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"></span>
+          @endif
+          <a
+            class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 {{ request()->routeIs('staff.dashboard') ? 'text-gray-800 dark:text-gray-100' : '' }}"
+            href="{{ route('staff.dashboard') }}"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+            </svg>
+            <span class="ml-4">Dashboard</span>
+          </a>
+        </li>
 
-    <!-- ================= ADMIN ================= -->
-    @if(auth()->user()->role === 'admin')
-        <div>
-            <p class="px-4 mb-2 text-xs font-semibold text-gray-400 uppercase">
-                Transaksi
-            </p>
-
-            <a href="#"
-               class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M16 11V7a4 4 0 00-8 0v4"/>
-                </svg>
-                <span class="font-medium">Orders</span>
-            </a>
-
-            <a href="#"
-               class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M17 20h5v-2a3 3 0 00-5.356-1.857"/>
-                </svg>
-                <span class="font-medium">Customers</span>
-            </a>
-        </div>
-    @endif
-
-    <!-- ================= SELLER ================= -->
-    @if(auth()->user()->role === 'seller')
-        <div>
-            <p class="px-4 mb-2 text-xs font-semibold text-gray-400 uppercase">
-                Transaksi
-            </p>
-
-            <a href="#"
-               class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M16 11V7a4 4 0 00-8 0v4"/>
-                </svg>
-                <span class="font-medium">Orders</span>
-            </a>
-        </div>
-    @endif
-
-    <!-- ================= USER ================= -->
-    @if(auth()->user()->role === 'user')
-        <div>
-            <p class="px-4 mb-2 text-xs font-semibold text-gray-400 uppercase">
-                User Menu
-            </p>
-
-            <a href="#"
-               class="flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M12 12a5 5 0 100-10 5 5 0 000 10Z"/>
-                </svg>
-                <span class="font-medium">Profile</span>
-            </a>
-        </div>
-    @endif
-
-</nav>
+        <li class="relative px-6 py-3">
+          @if(request()->routeIs('staff.monitoring.*'))
+            <span class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"></span>
+          @endif
+          <a
+            class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 {{ request()->routeIs('staff.monitoring.*') ? 'text-gray-800 dark:text-gray-100' : '' }}"
+            href="{{ route('staff.monitoring.index') }}"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            <span class="ml-4">Monitoring</span>
+          </a>
+        </li>
+      @endif
+    </ul>
+  </div>
+</aside>
+  
