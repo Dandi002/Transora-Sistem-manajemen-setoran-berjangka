@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
@@ -21,15 +22,30 @@ class ProfileController extends Controller
         ]);
     }
 
-    /**
+    /**     
      * Update the user's profile information.
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $validated = $request->validated();
+        $removeAvatar = (bool) ($validated['remove_avatar'] ?? false);
+        unset($validated['avatar'], $validated['remove_avatar']);
+
+        $request->user()->fill($validated);
 
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
+        }
+
+        if ($request->hasFile('avatar')) {
+            if ($request->user()->profile_photo_path) {
+                Storage::disk('public')->delete($request->user()->profile_photo_path);
+            }
+
+            $request->user()->profile_photo_path = $request->file('avatar')->store('avatars', 'public');
+        } elseif ($removeAvatar && $request->user()->profile_photo_path) {
+            Storage::disk('public')->delete($request->user()->profile_photo_path);
+            $request->user()->profile_photo_path = null;
         }
 
         $request->user()->save();
@@ -47,6 +63,10 @@ class ProfileController extends Controller
         ]);
 
         $user = $request->user();
+
+        if ($user->profile_photo_path) {
+            Storage::disk('public')->delete($user->profile_photo_path);
+        }
 
         Auth::logout();
 

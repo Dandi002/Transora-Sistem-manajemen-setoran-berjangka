@@ -17,7 +17,7 @@
         </div>
     @endif
 
-    <form action="{{ route('owner.saving-plans.store') }}" method="POST">
+    <form action="{{ route($routePrefix . '.saving-plans.store') }}" method="POST">
         @csrf
 
         <label class="block text-sm">
@@ -44,7 +44,7 @@
         </label>
 
         <div class="flex justify-end gap-3 mt-6">
-            <a href="{{ route('owner.saving-plans.index') }}"
+            <a href="{{ route($routePrefix . '.saving-plans.index') }}"
                class="px-4 py-2 text-sm font-medium leading-5 text-gray-600 border border-gray-300 rounded-lg hover:border-gray-500">
                 Batal
             </a>

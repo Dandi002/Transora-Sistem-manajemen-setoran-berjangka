@@ -9,16 +9,24 @@ use Illuminate\View\View;
 
 class SavingPlanController extends Controller
 {
+    private function routePrefix(): string
+    {
+        return auth()->user()?->role === 'staff' ? 'staff' : 'owner';
+    }
+
     public function index(): View
     {
         $plans = SavingPlan::orderBy('weekly_amount')->paginate(10);
+        $routePrefix = $this->routePrefix();
 
-        return view('owner.page.saving-plans.index', compact('plans'));
+        return view('owner.page.saving-plans.index', compact('plans', 'routePrefix'));
     }
 
     public function create(): View
     {
-        return view('owner.page.saving-plans.create');
+        $routePrefix = $this->routePrefix();
+
+        return view('owner.page.saving-plans.create', compact('routePrefix'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -35,13 +43,15 @@ class SavingPlanController extends Controller
             'is_active' => (bool) ($validated['is_active'] ?? true),
         ]);
 
-        return redirect()->route('owner.saving-plans.index')
+        return redirect()->route($this->routePrefix() . '.saving-plans.index')
             ->with('success', 'Paket berhasil ditambahkan.');
     }
 
     public function edit(SavingPlan $savingPlan): View
     {
-        return view('owner.page.saving-plans.edit', compact('savingPlan'));
+        $routePrefix = $this->routePrefix();
+
+        return view('owner.page.saving-plans.edit', compact('savingPlan', 'routePrefix'));
     }
 
     public function update(Request $request, SavingPlan $savingPlan): RedirectResponse
@@ -65,7 +75,7 @@ class SavingPlanController extends Controller
             'is_active' => $isActive,
         ]);
 
-        return redirect()->route('owner.saving-plans.index')
+        return redirect()->route($this->routePrefix() . '.saving-plans.index')
             ->with('success', 'Paket berhasil diperbarui.');
     }
 

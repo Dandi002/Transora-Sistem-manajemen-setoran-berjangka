@@ -1,64 +1,120 @@
 <section>
-    <header>
-        <h2 class="text-lg font-medium text-black-900 dark:text-black-100">
-            {{ __('Profile Information') }}
-        </h2>
-
-        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-            {{ __("Update your account's profile information and email address.") }}
-        </p>
-    </header>
-
     <form id="send-verification" method="post" action="{{ route('verification.send') }}">
         @csrf
     </form>
 
-    <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
+    <form method="post" action="{{ route('profile.update') }}" enctype="multipart/form-data">
         @csrf
         @method('patch')
 
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
-            <x-input-error class="mt-2" :messages="$errors->get('name')" />
-        </div>
+        @php
+            $avatarUrl = $user->profile_photo_path
+                ? asset('storage/' . $user->profile_photo_path)
+                : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=bfdbfe&color=1e3a8a&size=200';
+        @endphp
 
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
-            <x-input-error class="mt-2" :messages="$errors->get('email')" />
+        <div class="ep-card">
+            <p class="ep-card-title">Foto Profil</p>
 
-            @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
-                <div>
-                    <p class="text-sm mt-2 text-gray-800 dark:text-gray-200">
-                        {{ __('Your email address is unverified.') }}
-
-                        <button form="send-verification" class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
-                            {{ __('Click here to re-send the verification email.') }}
-                        </button>
-                    </p>
-
-                    @if (session('status') === 'verification-link-sent')
-                        <p class="mt-2 font-medium text-sm text-green-600 dark:text-green-400">
-                            {{ __('A new verification link has been sent to your email address.') }}
-                        </p>
-                    @endif
+            <div class="ep-photo-row">
+                <div class="ep-avatar">
+                    <img src="{{ $avatarUrl }}" alt="{{ $user->name }}">
                 </div>
-            @endif
+
+                <div>
+                    <p class="ep-user-name">{{ $user->name }}</p>
+                    <p class="ep-user-meta">JPG, PNG, WEBP (maks 2MB)</p>
+
+                    <div class="ep-photo-actions">
+                        <input id="avatar" name="avatar" type="file" accept=".jpg,.jpeg,.png,.webp" style="display:none"
+                               onchange="document.getElementById('avatar-file-name').textContent = this.files[0] ? this.files[0].name : 'Belum ada file dipilih';document.getElementById('remove_avatar').checked = false;">
+                        <label for="avatar" class="ep-btn ep-btn-primary">Unggah foto baru</label>
+
+                        <label class="ep-btn ep-btn-ghost" for="remove_avatar">Hapus</label>
+                        <input id="remove_avatar" type="checkbox" name="remove_avatar" value="1" style="display:none">
+                    </div>
+
+                    <span id="avatar-file-name" class="ep-hint">Belum ada file dipilih</span>
+                </div>
+            </div>
+
+            @error('avatar')
+                <p class="ep-error">{{ $message }}</p>
+            @enderror
+            @error('remove_avatar')
+                <p class="ep-error">{{ $message }}</p>
+            @enderror
         </div>
 
-        <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
+        <div class="ep-card">
+            <p class="ep-card-title">Informasi Akun</p>
 
-            @if (session('status') === 'profile-updated')
-                <p
-                    x-data="{ show: true }"
-                    x-show="show"
-                    x-transition
-                    x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-600 dark:text-gray-400"
-                >{{ __('Saved.') }}</p>
-            @endif
+            <div class="ep-field">
+                <label for="name" class="ep-label">Nama lengkap</label>
+                <input id="name" name="name" type="text" class="ep-input" value="{{ old('name', $user->name) }}" required autofocus autocomplete="name">
+                @error('name')
+                    <p class="ep-error">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div class="ep-field">
+                <label for="email" class="ep-label">Alamat email</label>
+                <input id="email" name="email" type="email" class="ep-input" value="{{ old('email', $user->email) }}" required autocomplete="username">
+
+                @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail)
+                    <div style="margin-top:8px;">
+                        @if ($user->hasVerifiedEmail())
+                            <span class="ep-badge ep-badge-ok">Terverifikasi</span>
+                        @else
+                            <span class="ep-badge ep-badge-warn">Belum verifikasi</span>
+                            <button form="send-verification" class="ep-link">
+                                Kirim ulang verifikasi
+                            </button>
+                        @endif
+                    </div>
+                @endif
+
+                @if (session('status') === 'verification-link-sent')
+                    <p class="ep-success" style="margin-top:6px;">Link verifikasi baru sudah dikirim.</p>
+                @endif
+
+                @error('email')
+                    <p class="ep-error">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div class="ep-split"></div>
+
+            <div class="ep-field">
+                <label for="phone" class="ep-label">Nomor HP</label>
+                <input id="phone" name="phone" type="text" class="ep-input" value="{{ old('phone', $user->phone) }}" autocomplete="tel" placeholder="08xxxxxxxxxx">
+                @error('phone')
+                    <p class="ep-error">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div class="ep-field" style="margin-bottom: 4px;">
+                <label for="alamat" class="ep-label">Alamat</label>
+                <textarea id="alamat" name="alamat" class="ep-input ep-textarea" placeholder="Masukkan alamat lengkap">{{ old('alamat', $user->alamat) }}</textarea>
+                @error('alamat')
+                    <p class="ep-error">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div class="ep-row-end">
+                <button type="submit" class="ep-btn ep-btn-save">Simpan</button>
+
+                @if (session('status') === 'profile-updated')
+                    <span
+                        class="ep-success"
+                        x-data="{ show: true }"
+                        x-show="show"
+                        x-transition
+                        x-init="setTimeout(() => show = false, 2200)">
+                        Perubahan tersimpan
+                    </span>
+                @endif
+            </div>
         </div>
     </form>
 </section>

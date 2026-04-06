@@ -5,7 +5,7 @@
 <div class="flex justify-between items-center mb-4 mt-8">
     <h2 class="text-2xl font-semibold text-gray-700 dark:text-gray-200">Master Paket</h2>
 
-    <a href="{{ route('owner.saving-plans.create') }}"
+    <a href="{{ route($routePrefix . '.saving-plans.create') }}"
        class="px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-lg hover:bg-purple-700">
         + Tambah Paket
     </a>
@@ -50,12 +50,12 @@
                         </td>
                         <td class="px-4 py-3 text-sm whitespace-nowrap">
                             <div class="flex items-center gap-2 flex-wrap">
-                                <a href="{{ route('owner.saving-plans.edit', $plan) }}"
+                                <a href="{{ route($routePrefix . '.saving-plans.edit', $plan) }}"
                                    class="inline-flex items-center px-3 py-1 rounded-md text-xs font-semibold text-purple-700 bg-purple-100 hover:bg-purple-200 dark:text-purple-100 dark:bg-purple-700 dark:hover:bg-purple-600">
                                     Edit
                                 </a>
 
-                                <form method="POST" action="{{ route('owner.saving-plans.toggle-active', $plan) }}">
+                                <form method="POST" action="{{ route($routePrefix . '.saving-plans.toggle-active', $plan) }}">
                                     @csrf
                                     <button type="submit"
                                             class="inline-flex items-center px-3 py-1 rounded-md text-xs font-semibold {{ $plan->is_active ? 'text-yellow-800 bg-yellow-100 hover:bg-yellow-200 dark:text-yellow-100 dark:bg-yellow-700 dark:hover:bg-yellow-600' : 'text-green-800 bg-green-100 hover:bg-green-200 dark:text-green-100 dark:bg-green-700 dark:hover:bg-green-600' }}"
@@ -64,15 +64,17 @@
                                     </button>
                                 </form>
 
-                                <form method="POST" action="{{ route('owner.saving-plans.destroy', $plan) }}">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit"
-                                            class="inline-flex items-center px-3 py-1 rounded-md text-xs font-semibold text-red-800 bg-red-100 hover:bg-red-200 dark:text-red-100 dark:bg-red-700 dark:hover:bg-red-600"
-                                            onclick="return confirm('Hapus paket ini?')">
-                                        Hapus
-                                    </button>
-                                </form>
+                                @if(($routePrefix ?? 'owner') === 'owner')
+                                    <form method="POST" action="{{ route('owner.saving-plans.destroy', $plan) }}">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                                class="inline-flex items-center px-3 py-1 rounded-md text-xs font-semibold text-red-800 bg-red-100 hover:bg-red-200 dark:text-red-100 dark:bg-red-700 dark:hover:bg-red-600"
+                                                onclick="return confirm('Hapus paket ini?')">
+                                            Hapus
+                                        </button>
+                                    </form>
+                                @endif
                             </div>
                         </td>
                     </tr>

@@ -32,6 +32,7 @@ class User extends Authenticatable
         'staff_id',
         'assigned_staff_id',
         'saving_plan_id',
+        'profile_photo_path',
 
 
 

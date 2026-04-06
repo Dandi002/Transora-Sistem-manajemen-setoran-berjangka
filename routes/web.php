@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', fn() => view('landing.home'));
 Route::get('/detail-sistem', fn() => view('landing.detail-sistem'))
     ->name('detail-sistem');
+Route::get('/ketentuan', fn() => view('landing.ketentuan'))
+    ->name('ketentuan');
 
 /*
 |--------------------------------------------------------------------------
@@ -96,10 +98,25 @@ Route::middleware(['auth', 'role:staff'])
 
         Route::get('/dashboard', fn() => view('staff.dashboard'))
             ->name('dashboard');
-            Route::get('/monitoring', [MonitoringController::class, 'monitoring'])
-    ->name('monitoring.index'); 
-    Route::post('/monitoring/check', [MonitoringController::class, 'toggleWeek'])
-    ->name('monitoring.check');
+
+        Route::get('/monitoring', [MonitoringController::class, 'monitoring'])
+            ->name('monitoring.index');
+        Route::post('/monitoring/check', [MonitoringController::class, 'toggleWeek'])
+            ->name('monitoring.check');
+
+        // Master paket (staff tanpa delete)
+        Route::get('/saving-plans', [SavingPlanController::class, 'index'])
+            ->name('saving-plans.index');
+        Route::get('/saving-plans/create', [SavingPlanController::class, 'create'])
+            ->name('saving-plans.create');
+        Route::post('/saving-plans', [SavingPlanController::class, 'store'])
+            ->name('saving-plans.store');
+        Route::get('/saving-plans/{savingPlan}/edit', [SavingPlanController::class, 'edit'])
+            ->name('saving-plans.edit');
+        Route::put('/saving-plans/{savingPlan}', [SavingPlanController::class, 'update'])
+            ->name('saving-plans.update');
+        Route::post('/saving-plans/{savingPlan}/toggle-active', [SavingPlanController::class, 'toggleActive'])
+            ->name('saving-plans.toggle-active');
 
     });
 

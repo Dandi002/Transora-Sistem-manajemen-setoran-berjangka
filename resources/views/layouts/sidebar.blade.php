@@ -1,7 +1,7 @@
 <aside class="z-20 hidden w-64 overflow-y-auto bg-white dark:bg-gray-800 md:block flex-shrink-0">
   <div class="py-4 text-gray-500 dark:text-gray-400">
     <a class="ml-6 text-lg font-bold text-gray-800 dark:text-gray-200" href="#">
-      Windmill
+      Dashboard Transora  
     </a>
 
     @php
@@ -99,6 +99,21 @@
               <path d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
             </svg>
             <span class="ml-4">Monitoring</span>
+          </a>
+        </li>
+
+        <li class="relative px-6 py-3">
+          @if(request()->routeIs('staff.saving-plans.*'))
+            <span class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"></span>
+          @endif
+          <a
+            class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 {{ request()->routeIs('staff.saving-plans.*') ? 'text-gray-800 dark:text-gray-100' : '' }}"
+            href="{{ route('staff.saving-plans.index') }}"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-10v2m0 12v2M4 12a8 8 0 1016 0 8 8 0 10-16 0z"></path>
+            </svg>
+            <span class="ml-4">Master Paket</span>
           </a>
         </li>
       @endif

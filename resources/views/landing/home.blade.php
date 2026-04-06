@@ -258,7 +258,7 @@
 
             </p>
 
-            <a href="#"
+            <a href="{{ route('ketentuan') }}"
             class="inline-flex items-center gap-2 text-sm font-semibold text-gray-900 border-b border-gray-900 w-fit">
             Baca Ketentuan
             <span>→</span>
