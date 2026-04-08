@@ -11,15 +11,47 @@ class MonitoringController extends Controller
     {
         $staff = auth()->user();
         $search = trim((string) $request->query('search', ''));
+        $currentWeekNum = ((int) now()->weekOfYear - 1) % 52 + 1;
 
         $users = $staff->monitoredUsers()
             ->with(['weeklyProgress', 'savingPlan'])
             ->when($search !== '', function ($query) use ($search) {
                 $query->where('name', 'like', '%' . $search . '%');
             })
-            ->get();
+            ->get()
+            ->map(function ($user) use ($currentWeekNum) {
+                $done = $user->weeklyProgress->where('is_checked', true)->count();
+                $user->progress_percent = round(($done / 52) * 100);
 
-        return view('staff.monitoring.index', compact('users', 'search'));
+                $lastChecked = $user->weeklyProgress
+                    ->where('is_checked', true)
+                    ->where('week_number', '<=', 52)
+                    ->sortByDesc('week_number')
+                    ->first();
+
+                $lastWeek = $lastChecked?->week_number;
+                $user->last_paid_week = $lastWeek;
+                $user->weeks_ago = $lastWeek
+                    ? ($currentWeekNum >= $lastWeek
+                        ? ($currentWeekNum - $lastWeek)
+                        : ((52 - $lastWeek) + $currentWeekNum))
+                    : 52;
+
+                if ($user->weeks_ago >= 5) {
+                    $user->payment_status = 'Kritis';
+                    $user->payment_status_class = 'critical';
+                } elseif ($user->weeks_ago >= 2) {
+                    $user->payment_status = 'Waspada';
+                    $user->payment_status_class = 'warning';
+                } else {
+                    $user->payment_status = 'Lancar';
+                    $user->payment_status_class = 'safe';
+                }
+
+                return $user;
+            });
+
+        return view('staff.monitoring.index', compact('users', 'search', 'currentWeekNum'));
     }
 
     public function toggleWeek(Request $request)

@@ -67,13 +67,13 @@ class RegisteredUserController extends Controller
                 'alamat' => $request->alamat,
                 'password' => Hash::make($request->password),
                 'role' => 'pengguna',
-                'status' => 'pending',
+                'status' => 'approved',
                 'is_active' => true,
                 'assigned_staff_id' => $staff->id,
                 'saving_plan_id' => $request->saving_plan_id ?: $defaultPlanId,
             ]);
         });
 
-        return back()->with('success', 'Akun berhasil dibuat, tunggu approval owner.');
+        return back()->with('success', 'Akun telah dibuat, silakan login Transora Mobile di device mobile Anda.');
     }
 }

@@ -26,6 +26,22 @@
     .mon-legend { display: flex; gap: 14px; align-items: center; margin-bottom: 0.875rem; flex-wrap: wrap; }
     .mon-leg-item { display: flex; align-items: center; gap: 5px; font-size: 0.75rem; color: #6B7280; }
     .mon-leg-dot  { width: 14px; height: 14px; border-radius: 4px; flex-shrink: 0; }
+    .mon-status-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        font-size: 0.6875rem;
+        font-weight: 600;
+        padding: 0.2rem 0.55rem;
+        white-space: nowrap;
+    }
+    .mon-status-safe { background: #DCFCE7; color: #166534; border: 1px solid #86EFAC; }
+    .mon-status-warning { background: #FEF3C7; color: #92400E; border: 1px solid #FCD34D; }
+    .mon-status-critical { background: #FEE2E2; color: #991B1B; border: 1px solid #FCA5A5; }
+    .theme-dark .mon-status-safe { background: rgba(22,163,74,.15); color: #86EFAC; border-color: rgba(22,163,74,.35); }
+    .theme-dark .mon-status-warning { background: rgba(245,158,11,.15); color: #FCD34D; border-color: rgba(245,158,11,.35); }
+    .theme-dark .mon-status-critical { background: rgba(239,68,68,.15); color: #FCA5A5; border-color: rgba(239,68,68,.35); }
 
     /* Table */
     .mon-table-outer { overflow-x: auto; max-width: 100%; border: 1px solid #E5E7EB; border-radius: 12px; }
@@ -93,24 +109,15 @@
 </style>
 
 @php
-    $currentWeekNum = now()->weekOfYear;
-
     $totalPct = 0;
     foreach ($users as $u) {
-        $done = $u->weeklyProgress->where('is_checked', true)->count();
-        $totalPct += round($done / 52 * 100);
+        $totalPct += $u->progress_percent ?? 0;
     }
     $avgPct = $users->count() > 0 ? round($totalPct / $users->count()) : 0;
 
     $lateCount = 0;
     foreach ($users as $u) {
-        $last = $u->weeklyProgress
-            ->where('is_checked', true)
-            ->where('week_number', '<=', $currentWeekNum)
-            ->sortByDesc('week_number')
-            ->first();
-        $weeksAgo = $last ? ($currentWeekNum - $last->week_number) : $currentWeekNum;
-        if ($weeksAgo > 2) $lateCount++;
+        if (($u->payment_status ?? 'Lancar') !== 'Lancar') $lateCount++;
     }
 @endphp
 
@@ -175,6 +182,15 @@
             <span class="mon-leg-dot" style="background:transparent; border:1.5px solid #D1D5DB;"></span>
             Belum setor
         </div>
+        <div class="mon-leg-item">
+            <span class="mon-status-badge mon-status-safe">Lancar</span>
+        </div>
+        <div class="mon-leg-item">
+            <span class="mon-status-badge mon-status-warning">Waspada</span>
+        </div>
+        <div class="mon-leg-item">
+            <span class="mon-status-badge mon-status-critical">Kritis</span>
+        </div>
     </div>
 
     {{-- Table --}}
@@ -184,6 +200,7 @@
                 <tr>
                     <th class="col-name">Pengguna</th>
                     <th class="px-3 py-2 text-left">Paket</th>
+                    <th class="px-3 py-2 text-left">Status</th>
                     @for ($i = 1; $i <= 52; $i++)
                         <th class="{{ $i == $currentWeekNum ? 'col-wk-active' : '' }}">{{ $i }}</th>
                     @endfor
@@ -200,6 +217,11 @@
                         @else
                             <span class="text-gray-400">Belum pilih paket</span>
                         @endif
+                    </td>
+                    <td class="px-3 py-2 text-left whitespace-nowrap">
+                        <span class="mon-status-badge mon-status-{{ $user->payment_status_class }}">
+                            {{ $user->payment_status }}
+                        </span>
                     </td>
 
                     @for ($week = 1; $week <= 52; $week++)
@@ -225,7 +247,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="54" class="px-4 py-4 text-sm text-center text-gray-500 dark:text-gray-300">
+                    <td colspan="55" class="px-4 py-4 text-sm text-center text-gray-500 dark:text-gray-300">
                         Pengguna tidak ditemukan{{ !empty($search) ? ' untuk kata kunci "' . $search . '"' : '' }}.
                     </td>
                 </tr>

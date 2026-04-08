@@ -2,7 +2,7 @@
 
 @section('content')
 @php
-    $currentWeekNum = now()->weekOfYear;
+    $currentWeekNum = ((int) now()->weekOfYear - 1) % 52 + 1;
 @endphp
 
 <div class="my-6 flex items-center justify-between gap-3">
@@ -112,12 +112,26 @@
                         $progress = round(($done / 52) * 100);
                         $lastChecked = $user->weeklyProgress
                             ->where('is_checked', true)
-                            ->where('week_number', '<=', $currentWeekNum)
+                            ->where('week_number', '<=', 52)
                             ->sortByDesc('week_number')
                             ->first();
                         $lastWeek = $lastChecked?->week_number;
-                        $weeksAgo = $lastWeek ? ($currentWeekNum - $lastWeek) : $currentWeekNum;
-                        $isLate = $weeksAgo > 2;
+                        $weeksAgo = $lastWeek
+                            ? ($currentWeekNum >= $lastWeek
+                                ? ($currentWeekNum - $lastWeek)
+                                : ((52 - $lastWeek) + $currentWeekNum))
+                            : 52;
+
+                        if ($weeksAgo >= 5) {
+                            $conditionText = 'Kritis';
+                            $conditionClass = 'text-red-700 bg-red-100 dark:bg-red-700 dark:text-red-100';
+                        } elseif ($weeksAgo >= 2) {
+                            $conditionText = 'Waspada';
+                            $conditionClass = 'text-yellow-700 bg-yellow-100 dark:bg-yellow-700 dark:text-yellow-100';
+                        } else {
+                            $conditionText = 'Lancar';
+                            $conditionClass = 'text-green-700 bg-green-100 dark:bg-green-700 dark:text-green-100';
+                        }
                     @endphp
                     <tr class="text-gray-700 dark:text-gray-400">
                         <td class="px-4 py-3 text-sm">
@@ -157,9 +171,8 @@
                         </td>
 
                         <td class="px-4 py-3 text-sm whitespace-nowrap">
-                            <span class="px-2 py-1 font-semibold leading-tight rounded-full
-                                {{ $isLate ? 'text-red-700 bg-red-100 dark:bg-red-700 dark:text-red-100' : 'text-green-700 bg-green-100 dark:bg-green-700 dark:text-green-100' }}">
-                                {{ $isLate ? 'Perlu perhatian' : 'Normal' }}
+                            <span class="px-2 py-1 font-semibold leading-tight rounded-full {{ $conditionClass }}">
+                                {{ $conditionText }}
                             </span>
                         </td>
                     </tr>

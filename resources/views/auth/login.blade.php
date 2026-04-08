@@ -106,13 +106,7 @@
                     </form>
 
                     <!-- Register -->
-                    <p class="text-center text-sm text-gray-600 mt-6">
-                        Belum punya akun?
-                        <a href="{{ route('register') }}"
-                        class="text-emerald-700 font-semibold hover:underline">
-                            Daftar sekarang
-                        </a>
-                    </p>
+                    
 
                 </div>
             </div>

@@ -13,7 +13,7 @@
         
         <link rel="stylesheet" href="css/landing.css">
     </head>
-    <body class="bg-white font-sans antialiased overflow-x-hidden">
+    <body class="bg-white font-sans antialiased overflow-x-hidden" style="scroll-behavior:smooth;">
         
         <!-- Background Decorative Elements -->
         <div class="fixed inset-0 overflow-hidden pointer-events-none -z-10">
@@ -37,123 +37,40 @@
                 </div>
                 
                 <div class="hidden md:flex gap-10 items-center">
-                    <a href="#" class="text-gray-900 hover:text-primary transition-colors font-medium">Layanan</a>
-                    <a href="#" class="text-gray-900 hover:text-primary transition-colors font-medium">Produk</a>
-                    <a href="#" class="text-gray-900 hover:text-primary transition-colors font-medium">Edukasi</a>
-                    <a href="#" class="text-gray-900 hover:text-primary transition-colors font-medium">Kontak</a>
+                    <a href="#tentang" class="text-gray-900 hover:text-primary transition-colors font-medium">Tentang</a>
+                    <a href="#faq" class="text-gray-900 hover:text-primary transition-colors font-medium">FAQ</a>
                 </div>
                 
-                <button class="bg-primary text-white px-8 py-3 rounded-full font-semibold hover:bg-secondary transition-all duration-300 hover:scale-105 shadow-lg">
+                <a href="{{ route('register') }}" class="inline-flex items-center bg-primary text-white px-8 py-3 rounded-full font-semibold hover:bg-secondary transition-all duration-300 hover:scale-105 shadow-lg">
                     Mulai Sekarang
-                </button>
+                </a>
             </div>
         </nav>
         
-        <!-- Hero Section -->
+                <!-- Hero Section -->
         <section class="relative px-6 lg:px-12 pt-16 pb-28 texture">
-            <div class="max-w-7xl mx-auto">
-                <div class="grid lg:grid-cols-2 gap-16 items-center">
-                    <!-- Left Content -->
-                    <div class="space-y-8">
-                        
-                        
-                        <h1 class="font-display font-bold text-6xl lg:text-7xl leading-tight text-gray-900 opacity-0 animate-slide-up delay-100">
-                            Setor Sedikit.
-                            <span class="block gradient-text mt-2">Konsisten Lebih Penting.</span>
-                        </h1>
-                        
-                        <p class="text-xl text-gray-600 leading-relaxed max-w-xl opacity-0 animate-slide-up delay-200">
-                            Layanan setoran berjangka yang membantu kamu menabung secara rutin,
-                            tercatat otomatis, dan transparan dari awal hingga akhir periode.   
-                        </p>
-                        
-                        <div class="flex flex-wrap gap-4 opacity-0 animate-slide-up delay-300">
-                            <button class="bg-primary text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-secondary transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
-                                Mulai Setoran
-                            </button>
-                            
-                        </div>
-                    </div>
-                    
-                    <!-- Right Visual -->
-                    <div class="relative opacity-0 animate-slide-right delay-200">
-                        <div class="relative">
-                            <!-- Main Image Container -->
-                            <div class="relative bg-gradient-to-br from-accent to-primary p-1 rounded-[3rem] shadow-2xl hover-lift">
-                                <div class="bg-gray-50 rounded-[2.9rem] p-12 h-[600px] flex items-center justify-center overflow-hidden">
-                                    <!-- Finance Dashboard Mockup -->
-                                    <div class="relative w-full">
-                                        <div class="bg-white rounded-3xl p-8 shadow-2xl">
-                                            <div class="text-center space-y-6">
-                                                <!-- Balance Card -->
-                                                <div class="bg-gradient-to-br from-primary to-secondary rounded-2xl p-6 text-white">
-                                                    <div class="text-sm opacity-90 mb-2">Total Saldo</div>
-                                                    <div class="font-display text-4xl font-bold">Rp 45.750.000</div>
-                                                    <div class="flex justify-between mt-4 text-sm">
-                                                        <span>Periode berjalan</span>
-                                                        <span>💹</span>
-                                                    </div>
-                                                </div>
-                                                
-                                                <!-- Quick Stats -->
-                                                <div class="grid grid-cols-2 gap-4">
-                                                    <div class="bg-gray-50 rounded-xl p-4 text-left">
-                                                        <div class="text-xs text-gray-500 mb-1">Tabungan</div>
-                                                        <div class="font-bold text-gray-900">Rp 30.5 Jt</div>
-                                                    </div>
-                                                    <div class="bg-gray-50 rounded-xl p-4 text-left">
-                                                        <div class="text-xs text-gray-500 mb-1">Investasi</div>
-                                                        <div class="font-bold text-gray-900">Rp 15.2 Jt</div>
-                                                    </div>
-                                                </div>
-                                                
-                                                <!-- Action Buttons -->
-                                                <div class="grid grid-cols-3 gap-3">
-                                                    <button class="bg-primary/10 text-primary rounded-xl p-3 text-xs font-semibold hover:bg-primary/20 transition">
-                                                        Setor
-                                                    </button>
-                                                    <button class="bg-primary/10 text-primary rounded-xl p-3 text-xs font-semibold hover:bg-primary/20 transition">
-                                                        Tarik
-                                                    </button>
-                                                    <button class="bg-primary/10 text-primary rounded-xl p-3 text-xs font-semibold hover:bg-primary/20 transition">
-                                                        Kirim
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- Floating Elements -->
-                                        <div class="absolute -top-4 -right-4 bg-accent/80 text-white rounded-2xl p-3 shadow-lg animate-float">
-                                        <div class="text-xs font-semibold">Setoran Masuk</div>
-                                        <div class="text-xs opacity-80">Minggu ke-5</div>
-                                        </div>
-                                        <div class="absolute -bottom-4 -left-4 bg-secondary/80 text-white rounded-2xl p-3 shadow-lg animate-float" style="animation-delay: 1.5s;">
-                                            <div class="text-xs font-semibold">📅 12 Minggu</div>
-                                            <div class="text-xs opacity-80">Periode</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Floating Elements -->
-                            <div class="absolute -top-8 -left-8 w-24 h-24 bg-accent/30 rounded-2xl shadow-lg animate-float flex items-center justify-center" style="animation-delay: 2s;">
-                                <svg class="w-12 h-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                                </svg>
-                            </div>
-                            <div class="absolute -bottom-6 -right-6 w-32 h-32 bg-primary/10 rounded-full shadow-lg animate-float flex items-center justify-center" style="animation-delay: 3s;">
-                                <svg class="w-16 h-16 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-                                </svg>
-                            </div>
-                        </div>
+            <div class="max-w-5xl mx-auto text-center">
+                <div class="space-y-8">
+                    <h1 class="font-display font-bold text-5xl lg:text-7xl leading-tight text-gray-900 opacity-0 animate-slide-up delay-100">
+                        Setor Sedikit.
+                        <span class="block gradient-text mt-2">Konsisten Lebih Penting.</span>
+                    </h1>
+
+                    <p class="text-xl text-gray-600 leading-relaxed max-w-3xl mx-auto opacity-0 animate-slide-up delay-200">
+                        Layanan setoran berjangka yang membantu kamu menabung secara rutin, tercatat otomatis, dan transparan dari awal hingga akhir periode.
+                    </p>
+
+                    <div class="flex justify-center opacity-0 animate-slide-up delay-300">
+                        <a href="{{ route('register') }}" class="inline-flex items-center bg-primary text-white px-10 py-4 rounded-full font-bold text-lg hover:bg-secondary transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl">
+                            Mulai Setoran
+                        </a>
                     </div>
                 </div>
             </div>
         </section>
         
         <!-- Features Section -->
-        <section class="relative px-6 lg:px-12 py-24 bg-gradient-to-b from-white to-gray-50">
+        <section id="tentang" class="relative px-6 lg:px-12 py-24 bg-gradient-to-b from-white to-gray-50">
             <div class="max-w-7xl mx-auto">
                 <div class="text-center mb-20">
                     <span class="text-primary font-bold text-sm tracking-widest uppercase">Keunggulan Kami</span>
@@ -233,11 +150,7 @@
         </div>
 
         <!-- Image -->
-        <div class="mt-10 flex justify-end">
-            <img src="/img/mockup-app.png"
-                alt="Dashboard Setoran"
-                class="w-48 md:w-56">
-        </div>
+        
         </div>
 
         <!-- Card 2 -->
@@ -266,42 +179,65 @@
         </div>
 
         <!-- Image -->
-        <div class="mt-10 flex justify-end">
-            <img src="/img/mockup-period.png"
-                alt="Periode 12 Bulan"
-                class="w-48 md:w-56">
-        </div>
+        
         </div>
     
     </div>
     </section>
 
         
-        <!-- CTA Section -->
-        <section class="relative px-6 lg:px-12 py-32 bg-gradient-to-br from-primary via-secondary to-primary overflow-hidden">
-            <div class="absolute inset-0 opacity-10">
-                <div class="absolute top-10 left-10 w-64 h-64 bg-white rounded-full blur-3xl"></div>
-                <div class="absolute bottom-10 right-10 w-96 h-96 bg-accent rounded-full blur-3xl"></div>
-            </div>
-            
-            <div class="max-w-4xl mx-auto text-center relative z-10">
-                <h2 class="font-display text-5xl lg:text-6xl font-bold text-white mb-8">
-                    Mulai Perjalanan Finansial Anda
-                </h2>
-                <p class="text-xl text-white/90 mb-12 leading-relaxed">
-                    Bergabunglah dengan jutaan pengguna yang sudah meraih tujuan finansial mereka. Daftar sekarang dan dapatkan bonus hingga Rp 100.000!
-                </p>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center max-w-xl mx-auto">
-                    <input 
-                        type="email" 
-                        placeholder="Masukkan email Anda" 
-                        class="flex-1 px-8 py-4 rounded-full text-gray-900 focus:outline-none focus:ring-2 focus:ring-accent"
-                    />
-                    <button class="bg-white text-primary px-10 py-4 rounded-full font-bold hover:bg-accent hover:text-white transition-all duration-300 hover:scale-105 shadow-2xl">
-                        Daftar Gratis
-                    </button>
+        <!-- FAQ Section -->
+        <section id="faq" class="relative px-6 lg:px-12 py-24 bg-gradient-to-b from-white to-gray-50">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-12">
+                    <span class="text-primary font-bold text-sm tracking-widest uppercase">FAQ</span>
+                    <h2 class="font-display text-4xl lg:text-5xl font-bold text-gray-900 mt-4">Pertanyaan yang Sering Ditanyakan</h2>
+                    <p class="text-gray-600 mt-4 text-lg">
+                        Jawaban singkat seputar sistem setoran Transora.
+                    </p>
                 </div>
-                <p class="mt-6 text-sm text-white/70">Gratis tanpa biaya admin. Terdaftar & diawasi OJK.</p>
+
+                <div class="space-y-4">
+                    <details class="group bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
+                        <summary class="flex cursor-pointer list-none items-center justify-between text-lg font-semibold text-gray-900">
+                            Dana bisa ditarik kapan?
+                            <span class="text-primary transition group-open:rotate-45">+</span>
+                        </summary>
+                        <p class="mt-3 text-gray-600 leading-relaxed">
+                            Dana hanya bisa ditarik setelah periode 52 minggu (12 bulan) selesai sesuai ketentuan program.
+                        </p>
+                    </details>
+
+                    <details class="group bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
+                        <summary class="flex cursor-pointer list-none items-center justify-between text-lg font-semibold text-gray-900">
+                            Kalau telat setor bagaimana?
+                            <span class="text-primary transition group-open:rotate-45">+</span>
+                        </summary>
+                        <p class="mt-3 text-gray-600 leading-relaxed">
+                            Keterlambatan akan tercatat di monitoring. Jika menunggak 5 minggu berturut-turut, program dapat dihentikan otomatis.
+                        </p>
+                    </details>
+
+                    <details class="group bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
+                        <summary class="flex cursor-pointer list-none items-center justify-between text-lg font-semibold text-gray-900">
+                            Bisa ganti nominal paket di tengah periode?
+                            <span class="text-primary transition group-open:rotate-45">+</span>
+                        </summary>
+                        <p class="mt-3 text-gray-600 leading-relaxed">
+                            Tidak. Nominal paket mengikuti pilihan saat daftar, dan perubahan bisa dilakukan saat memulai periode baru.
+                        </p>
+                    </details>
+
+                    <details class="group bg-white rounded-2xl p-6 shadow-sm border border-gray-200">
+                        <summary class="flex cursor-pointer list-none items-center justify-between text-lg font-semibold text-gray-900">
+                            Apa Transora memberikan bunga/keuntungan?
+                            <span class="text-primary transition group-open:rotate-45">+</span>
+                        </summary>
+                        <p class="mt-3 text-gray-600 leading-relaxed">
+                            Tidak ada janji bunga atau keuntungan. Fokus Transora adalah membantu kebiasaan menabung terstruktur dan transparan.
+                        </p>
+                    </details>
+                </div>
             </div>
         </section>
         
@@ -319,33 +255,16 @@
                             <div class="font-display text-3xl font-bold">Transora</div>
                         </div>
                         <p class="text-white/70 max-w-md leading-relaxed">
-                            Platform keuangan digital terpercaya yang membantu Anda mencapai kebebasan finansial. Terdaftar dan diawasi oleh Otoritas Jasa Keuangan (OJK).
+                            Platform keuangan digital terpercaya yang membantu Anda mencapai kebebasan finansial. 
                         </p>
-                        <div class="mt-6 flex gap-4">
-                            <div class="bg-white/10 rounded-lg px-4 py-2">
-                                <div class="text-xs text-white/60">Terdaftar di</div>
-                                <div class="font-bold text-sm">OJK</div>
-                            </div>
-                            <div class="bg-white/10 rounded-lg px-4 py-2">
-                                <div class="text-xs text-white/60">Dijamin</div>
-                                <div class="font-bold text-sm">LPS</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div>
                     
                     </div>
                     
                     <div>
-                        <h4 class="font-bold text-lg mb-4">Perusahaan</h4>
-                        <ul class="space-y-3 text-white/70">
-                            <li><a href="#" class="hover:text-accent transition-colors">Tentang Kami</a></li>
-                            <li><a href="#" class="hover:text-accent transition-colors">Karir</a></li>
-                            <li><a href="#" class="hover:text-accent transition-colors">Blog</a></li>
-                            <li><a href="#" class="hover:text-accent transition-colors">Hubungi Kami</a></li>
-                        </ul>
+                    
                     </div>
+                    
+                  
                 </div>
                 
                 <div class="border-t border-white/20 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
@@ -361,3 +280,4 @@
         <script src="/js/landing.js"></script>
     </body>
     </html>
+

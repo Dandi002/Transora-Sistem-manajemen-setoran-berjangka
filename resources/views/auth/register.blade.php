@@ -161,12 +161,7 @@
                     </button>
                 </form>
 
-                <p class="text-center text-sm text-gray-600 mt-6">
-                    Sudah punya akun?
-                    <a href="{{ route('login') }}" class="text-emerald-700 font-semibold hover:underline">
-                        Masuk sekarang
-                    </a>
-                </p>
+                
 
             </div>
         </div>

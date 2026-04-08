@@ -24,7 +24,7 @@
                 <div>
                     <p class="ep-user-name">{{ $user->name }}</p>
                     <p class="ep-user-meta">JPG, PNG, WEBP (maks 2MB)</p>
-
+                    
                     <div class="ep-photo-actions">
                         <input id="avatar" name="avatar" type="file" accept=".jpg,.jpeg,.png,.webp" style="display:none"
                                onchange="document.getElementById('avatar-file-name').textContent = this.files[0] ? this.files[0].name : 'Belum ada file dipilih';document.getElementById('remove_avatar').checked = false;">
@@ -118,3 +118,4 @@
         </div>
     </form>
 </section>
+    

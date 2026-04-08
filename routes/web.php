@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SavingPlanController;
 use App\Http\Controllers\UserController;
@@ -42,7 +43,7 @@ Route::middleware(['auth', 'role:owner'])
     ->name('owner.')
     ->group(function () {
 
-        Route::get('/dashboard', fn() => view('owner.dashboard'))
+        Route::get('/dashboard', [DashboardController::class, 'owner'])
             ->name('dashboard');
 
         // Verifikasi user
@@ -96,7 +97,7 @@ Route::middleware(['auth', 'role:staff'])
     ->name('staff.')
     ->group(function () {
 
-        Route::get('/dashboard', fn() => view('staff.dashboard'))
+        Route::get('/dashboard', [DashboardController::class, 'staff'])
             ->name('dashboard');
 
         Route::get('/monitoring', [MonitoringController::class, 'monitoring'])
