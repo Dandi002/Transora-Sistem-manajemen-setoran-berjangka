@@ -12,6 +12,19 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
+    public function savingPlans()
+    {
+        $plans = SavingPlan::where('is_active', true)
+            ->orderBy('weekly_amount')
+            ->get(['id', 'name', 'weekly_amount']);
+
+        return response()->json([
+            'data' => $plans,
+            'message' => 'Daftar paket aktif berhasil diambil.',
+            'success' => true,
+        ]);
+    }
+
     // REGISTER
     public function register(Request $request)
     {
@@ -21,7 +34,7 @@ class AuthController extends Controller
             'phone' => ['required', 'string', 'max:30', 'unique:users,phone'],
             'alamat' => ['required', 'string', 'max:1000'],
             'password' => ['required', 'min:6', 'confirmed'],
-            'saving_plan_id' => ['nullable', 'exists:saving_plans,id'],
+            'saving_plan_id' => ['required', 'exists:saving_plans,id'],
         ]);
 
         $user = DB::transaction(function () use ($request) {
@@ -38,10 +51,6 @@ class AuthController extends Controller
                 ]);
             }
 
-            $defaultPlanId = SavingPlan::where('is_active', true)
-                ->orderBy('weekly_amount')
-                ->value('id');
-
             return User::create([
                 'name' => $request->name,
                 'email' => $request->email,
@@ -52,7 +61,7 @@ class AuthController extends Controller
                 'status' => 'approved',
                 'is_active' => true,
                 'assigned_staff_id' => $staff->id,
-                'saving_plan_id' => $request->saving_plan_id ?: $defaultPlanId,
+                'saving_plan_id' => $request->saving_plan_id,
             ]);
         });
 
