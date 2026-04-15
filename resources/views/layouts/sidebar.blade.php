@@ -1,15 +1,18 @@
 <aside class="z-20 hidden w-64 overflow-y-auto bg-white dark:bg-gray-800 md:block flex-shrink-0">
   <div class="py-4 text-gray-500 dark:text-gray-400">
-    <a class="ml-6 text-lg font-bold text-gray-800 dark:text-gray-200" href="#">
-      Dashboard Transora  
-    </a>
+    <a class="ml-6 text-xl font-bold text-gray-800 dark:text-gray-200" href="#">
+    Dashboard Transora  
+</a>
 
     @php
       $role = auth()->user()->role ?? null;
     @endphp
 
-    <ul class="mt-6">
+    <ul class="mt-8 space-y-1">
       @if($role === 'owner')
+        <li class="px-6 pb-2 pt-2 text-[11px] font-semibold tracking-[0.18em] uppercase text-gray-400 dark:text-gray-500">
+          Menu
+        </li>
         <li class="relative px-6 py-3">
           @if(request()->routeIs('owner.dashboard'))
             <span class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"></span>
@@ -25,6 +28,9 @@
           </a>
         </li>
 
+        <li class="px-6 pb-2 pt-7 text-[11px] font-semibold tracking-[0.18em] uppercase text-gray-400 dark:text-gray-500">
+          Pengguna
+        </li>
         <li class="relative px-6 py-3">
           @if(request()->routeIs('owner.users.*'))
             <span class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"></span>
@@ -40,7 +46,7 @@
           </a>
         </li>
 
-        <li class="relative px-6 py-3">
+        <li class="relative px-6 py-1">
           @if(request()->routeIs('owner.staff.*'))
             <span class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"></span>
           @endif
@@ -55,6 +61,23 @@
           </a>
         </li>
 
+        <li class="px-6 pb-2 pt-7 text-[11px] font-semibold tracking-[0.18em] uppercase text-gray-400 dark:text-gray-500">
+          Pengaturan
+        </li>
+        <li class="relative px-6 py-3">
+          @if(request()->routeIs('owner.transaction-histories.*'))
+            <span class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"></span>
+          @endif
+          <a
+            class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 {{ request()->routeIs('owner.transaction-histories.*') ? 'text-gray-800 dark:text-gray-100' : '' }}"
+            href="{{ route('owner.transaction-histories.index') }}"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M9 12h6m-6 4h6M7 4h10a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2zm0 0V2m10 2V2"></path>
+            </svg>
+            <span class="ml-4">Riwayat Transaksi</span>
+          </a>
+        </li>
         <li class="relative px-6 py-3">
           @if(request()->routeIs('owner.saving-plans.*'))
             <span class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"></span>
@@ -72,6 +95,9 @@
       @endif
 
       @if($role === 'staff')
+        <li class="px-6 pb-2 pt-2 text-[11px] font-semibold tracking-[0.18em] uppercase text-gray-400 dark:text-gray-500">
+          Menu
+        </li>
         <li class="relative px-6 py-3">
           @if(request()->routeIs('staff.dashboard'))
             <span class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"></span>
@@ -87,6 +113,9 @@
           </a>
         </li>
 
+        <li class="px-6 pb-2 pt-7 text-[11px] font-semibold tracking-[0.18em] uppercase text-gray-400 dark:text-gray-500">
+          Operasional
+        </li>
         <li class="relative px-6 py-3">
           @if(request()->routeIs('staff.monitoring.*'))
             <span class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"></span>
@@ -102,6 +131,24 @@
           </a>
         </li>
 
+        <li class="relative px-6 py-3">
+          @if(request()->routeIs('staff.setoran-histories.*'))
+            <span class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"></span>
+          @endif
+          <a
+            class="inline-flex items-center w-full text-sm font-semibold transition-colors duration-150 {{ request()->routeIs('staff.setoran-histories.*') ? 'text-gray-800 dark:text-gray-100' : '' }}"
+            href="{{ route('staff.setoran-histories.index') }}"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M9 12h6m-6 4h6M7 4h10a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2zm0 0V2m10 2V2"></path>
+            </svg>
+            <span class="ml-4">Riwayat Setoran</span>
+          </a>
+        </li>
+
+        <li class="px-6 pb-2 pt-7 text-[11px] font-semibold tracking-[0.18em] uppercase text-gray-400 dark:text-gray-500">
+          Referensi
+        </li>
         <li class="relative px-6 py-3">
           @if(request()->routeIs('staff.saving-plans.*'))
             <span class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"></span>

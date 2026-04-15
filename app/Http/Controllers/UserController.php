@@ -1,8 +1,12 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\AppSetting;
 use App\Models\SavingPlan;
+use App\Models\SetoranHistory;
+use App\Models\Transaksi;
 use App\Models\User;
+use App\Models\WeeklyProgress;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -14,7 +18,9 @@ class UserController extends Controller
     public function index()
     {
         $users = User::latest()->paginate(10);
-        return view('owner.page.users.index', compact('users'));
+        $globalSavingStartedAt = AppSetting::getValue('global_saving_started_at');
+
+        return view('owner.page.users.index', compact('users', 'globalSavingStartedAt'));
     }
 
     public function create()
@@ -130,6 +136,23 @@ class UserController extends Controller
             'status'  => $user->is_active,
             'message' => 'Status berhasil diperbarui',
         ]);
+    }
+
+    public function resetDeposits()
+    {
+        DB::transaction(function () {
+            SetoranHistory::query()->delete();
+            Transaksi::query()->delete();
+            WeeklyProgress::query()->update([
+                'is_checked' => false,
+                'checked_at' => null,
+            ]);
+            AppSetting::setValue('global_saving_started_at', null);
+        });
+
+        return redirect()
+            ->route('owner.users.index')
+            ->with('success', 'Semua setoran dan tanggal mulai global berhasil direset untuk kebutuhan testing.');
     }
 
     public function staffIndex()

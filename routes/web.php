@@ -1,11 +1,12 @@
 <?php
 
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\AppSettingController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SavingPlanController;
+use App\Http\Controllers\SetoranHistoryController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\UserVerificationController;
 use App\Http\Controllers\MonitoringController;
 use Illuminate\Support\Facades\Route;
 
@@ -46,16 +47,6 @@ Route::middleware(['auth', 'role:owner'])
         Route::get('/dashboard', [DashboardController::class, 'owner'])
             ->name('dashboard');
 
-        // Verifikasi user
-        Route::get('/user-verifikasi', [UserVerificationController::class, 'index'])
-            ->name('verifikasi-user');
-
-        Route::post('/user-verifikasi/{id}/approve', [UserVerificationController::class, 'approve'])
-            ->name('verifikasi.approve');
-
-        Route::post('/user-verifikasi/{id}/reject', [UserVerificationController::class, 'reject'])
-            ->name('verifikasi.reject');
-
         // CRUD users
         Route::resource('users', UserController::class);
 
@@ -69,6 +60,12 @@ Route::middleware(['auth', 'role:owner'])
         // Toggle active
         Route::post('/users/{id}/toggle-active', [UserController::class, 'toggleActive'])
             ->name('users.toggle-active');
+        Route::post('/users/reset-deposits', [UserController::class, 'resetDeposits'])
+            ->name('users.reset-deposits');
+        Route::post('/settings/global-saving-start', [AppSettingController::class, 'updateGlobalSavingStart'])
+            ->name('settings.global-saving-start');
+        Route::get('/transaction-histories', [SetoranHistoryController::class, 'ownerIndex'])
+            ->name('transaction-histories.index');
 
         // Master paket
         Route::get('/saving-plans', [SavingPlanController::class, 'index'])
@@ -104,21 +101,12 @@ Route::middleware(['auth', 'role:staff'])
             ->name('monitoring.index');
         Route::post('/monitoring/check', [MonitoringController::class, 'toggleWeek'])
             ->name('monitoring.check');
+        Route::get('/setoran-histories', [SetoranHistoryController::class, 'index'])
+            ->name('setoran-histories.index');
 
-        // Master paket (staff tanpa delete)
+        // Master paket (staff hanya lihat)
         Route::get('/saving-plans', [SavingPlanController::class, 'index'])
             ->name('saving-plans.index');
-        Route::get('/saving-plans/create', [SavingPlanController::class, 'create'])
-            ->name('saving-plans.create');
-        Route::post('/saving-plans', [SavingPlanController::class, 'store'])
-            ->name('saving-plans.store');
-        Route::get('/saving-plans/{savingPlan}/edit', [SavingPlanController::class, 'edit'])
-            ->name('saving-plans.edit');
-        Route::put('/saving-plans/{savingPlan}', [SavingPlanController::class, 'update'])
-            ->name('saving-plans.update');
-        Route::post('/saving-plans/{savingPlan}/toggle-active', [SavingPlanController::class, 'toggleActive'])
-            ->name('saving-plans.toggle-active');
-
     });
 
 /*

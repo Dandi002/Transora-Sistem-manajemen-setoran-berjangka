@@ -2,9 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Customer;
-use App\Models\SavingPlan;
-use App\Models\Transaksi;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -61,9 +58,19 @@ public function savingPlan()
     return $this->belongsTo(SavingPlan::class);
 }
 
-public function weeklyProgress()
+    public function weeklyProgress()
 {
     return $this->hasMany(WeeklyProgress::class);
+}
+
+public function transaksis()
+{
+    return $this->hasMany(Transaksi::class);
+}
+
+public function setoranHistories()
+{
+    return $this->hasMany(SetoranHistory::class);
 }
 
     /**

@@ -37,9 +37,11 @@
         white-space: nowrap;
     }
     .mon-status-safe { background: #DCFCE7; color: #166534; border: 1px solid #86EFAC; }
+    .mon-status-complete { background: #DBEAFE; color: #1D4ED8; border: 1px solid #93C5FD; }
     .mon-status-warning { background: #FEF3C7; color: #92400E; border: 1px solid #FCD34D; }
     .mon-status-critical { background: #FEE2E2; color: #991B1B; border: 1px solid #FCA5A5; }
     .theme-dark .mon-status-safe { background: rgba(22,163,74,.15); color: #86EFAC; border-color: rgba(22,163,74,.35); }
+    .theme-dark .mon-status-complete { background: rgba(59,130,246,.15); color: #93C5FD; border-color: rgba(59,130,246,.35); }
     .theme-dark .mon-status-warning { background: rgba(245,158,11,.15); color: #FCD34D; border-color: rgba(245,158,11,.35); }
     .theme-dark .mon-status-critical { background: rgba(239,68,68,.15); color: #FCA5A5; border-color: rgba(239,68,68,.35); }
 
@@ -96,7 +98,20 @@
     .theme-dark .week-box { border-color: #4B5563; }
     .week-box:hover { border-color: #9CA3AF; }
     .week-box.checked { background: #10B981; border-color: #059669; }
+    .week-box.checked-auto { background: #3B82F6; border-color: #2563EB; }
+    .week-box.locked {
+        cursor: not-allowed;
+        pointer-events: none;
+        opacity: 1;
+    }
     .week-box.checked::after {
+        content: '';
+        display: block; width: 10px; height: 10px;
+        margin: 3px auto 0;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 6l3 3 5-5' stroke='%23fff' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+        background-size: contain; background-repeat: no-repeat;
+    }
+    .week-box.checked-auto::after {
         content: '';
         display: block; width: 10px; height: 10px;
         margin: 3px auto 0;
@@ -176,11 +191,18 @@
     <div class="mon-legend">
         <div class="mon-leg-item">
             <span class="mon-leg-dot" style="background:#10B981; border:1.5px solid #059669;"></span>
-            Sudah setor
+            Checklist manual
+        </div>
+        <div class="mon-leg-item">
+            <span class="mon-leg-dot" style="background:#3B82F6; border:1.5px solid #2563EB;"></span>
+            Pembayaran transfer
         </div>
         <div class="mon-leg-item">
             <span class="mon-leg-dot" style="background:transparent; border:1.5px solid #D1D5DB;"></span>
             Belum setor
+        </div>
+        <div class="mon-leg-item">
+            <span class="mon-status-badge mon-status-complete">Selesai</span>
         </div>
         <div class="mon-leg-item">
             <span class="mon-status-badge mon-status-safe">Lancar</span>
@@ -226,22 +248,37 @@
 
                     @for ($week = 1; $week <= 52; $week++)
                         @php
-                            $isChecked = $user->weeklyProgress
+                            $progress = $user->weeklyProgress
                                 ->where('week_number', $week)
-                                ->where('is_checked', true)
-                                ->isNotEmpty();
+                                ->first();
+                            $isChecked = (bool) ($progress?->is_checked);
+                            $isPaidTransfer = in_array($week, $user->paid_transfer_weeks ?? [], true);
+                            $isStopped = ($user->payment_status ?? '') === 'Diberhentikan';
+                            $checkClass = $isChecked
+                                ? ($isPaidTransfer ? 'checked-auto locked' : 'checked')
+                                : '';
+                            $checkLabel = $isPaidTransfer ? 'Pembayaran transfer' : 'Checklist manual';
                         @endphp
                         <td>
-                            <form method="POST" action="{{ route('staff.monitoring.check') }}">
-                                @csrf
-                                <input type="hidden" name="user_id"     value="{{ $user->id }}">
-                                <input type="hidden" name="week_number" value="{{ $week }}">
-                                <input type="hidden" name="is_checked"  value="{{ $isChecked ? '0' : '1' }}">
-                                <button type="submit"
-                                        class="week-box {{ $isChecked ? 'checked' : '' }}"
-                                        title="Minggu {{ $week }} - {{ $isChecked ? 'Klik untuk uncheck' : 'Klik untuk check' }}">
+                            @if ($isPaidTransfer || $isStopped)
+                                <button type="button"
+                                        class="week-box {{ $checkClass }} {{ $isStopped ? 'locked' : '' }}"
+                                        title="{{ $isStopped
+                                            ? 'Akun diberhentikan karena tidak setor 10 minggu berturut-turut. Checklist tidak bisa diubah.'
+                                            : 'Minggu ' . $week . ' - ' . $checkLabel . '. Checklist otomatis dari pembayaran transfer dan tidak bisa diubah manual.' }}">
                                 </button>
-                            </form>
+                            @else
+                                <form method="POST" action="{{ route('staff.monitoring.check') }}">
+                                    @csrf
+                                    <input type="hidden" name="user_id"     value="{{ $user->id }}">
+                                    <input type="hidden" name="week_number" value="{{ $week }}">
+                                    <input type="hidden" name="is_checked"  value="{{ $isChecked ? '0' : '1' }}">
+                                    <button type="submit"
+                                            class="week-box {{ $checkClass }}"
+                                            title="Minggu {{ $week }} - {{ $isChecked ? $checkLabel : 'Belum setor' }}. {{ $isChecked ? 'Klik untuk uncheck' : 'Klik untuk check' }}">
+                                    </button>
+                                </form>
+                            @endif
                         </td>
                     @endfor
                 </tr>

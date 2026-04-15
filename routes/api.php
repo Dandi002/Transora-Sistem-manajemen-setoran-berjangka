@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\PostController;
 
@@ -18,12 +19,16 @@ use App\Http\Controllers\Api\PostController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);    
 Route::get('/saving-plans', [AuthController::class, 'savingPlans']);
+Route::post('/payments/midtrans/notification', [PaymentController::class, 'notification']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [\App\Http\Controllers\Api\AuthController::class, 'logout']);
     Route::get('/me/dashboard', [DashboardController::class, 'show']);
     Route::get('/me/profile', [ProfileController::class, 'show']);
     Route::post('/me/profile', [ProfileController::class, 'update']);
+    Route::post('/payments', [PaymentController::class, 'create']);
+    Route::get('/payments/{transaksi}', [PaymentController::class, 'show']);
 
     Route::resource('/posts', \App\Http\Controllers\Api\PostController::class); // tambahkan ini
 });
+        

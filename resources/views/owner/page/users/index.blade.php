@@ -16,6 +16,45 @@
 
 </div>
 
+<div class="mb-6 p-4 rounded-lg bg-white dark:bg-gray-800 shadow-xs">
+    <div class="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+        <div>
+            <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-200">Mulai Setoran Global</h3>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                Atur tanggal mulai program untuk semua pengguna sekaligus.
+            </p>
+        </div>
+        <div class="flex flex-col gap-3 xl:items-end">
+            <form action="{{ route('owner.settings.global-saving-start') }}" method="POST" class="flex flex-wrap items-center gap-2">
+                @csrf
+                <input
+                    type="date"
+                    name="global_saving_started_at"
+                    value="{{ $globalSavingStartedAt }}"
+                    class="px-4 py-2.5 text-sm rounded-xl border border-gray-300 bg-white text-gray-700 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+                >
+                <button
+                    type="submit"
+                    class="px-4 py-2.5 text-sm font-semibold text-white bg-green-600 rounded-xl hover:bg-green-700"
+                >
+                    {{ $globalSavingStartedAt ? 'Ubah Tanggal Mulai' : 'Mulai Setoran Global' }}
+                </button>
+            </form>
+
+            <form action="{{ route('owner.users.reset-deposits') }}" method="POST">
+                @csrf
+                <button
+                    type="submit"
+                    onclick="return confirm('Reset semua setoran, transaksi, dan riwayat untuk testing? Data pembayaran akan kembali dari awal.')"
+                    class="px-4 py-2.5 text-sm font-semibold text-white bg-red-600 rounded-xl hover:bg-red-700"
+                >
+                    Reset Semua Setoran
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
 <div class="w-full overflow-hidden rounded-lg shadow-xs bg-white dark:bg-gray-800">
     <div class="w-full overflow-x-auto">
 
@@ -103,23 +142,21 @@
                     {{-- ACTIONS --}}
                     <td class="px-4 py-3">
                         <div class="flex items-center space-x-4 text-sm">
+                                <a href="{{ route('owner.users.edit', $user) }}"
+                                   class="text-purple-600 hover:text-purple-800 dark:hover:text-purple-400 font-semibold">
+                                    Edit
+                                </a>
 
-                            <a href="{{ route('owner.users.edit', $user) }}"
-                               class="text-purple-600 hover:text-purple-800 dark:hover:text-purple-400 font-semibold">
-                                Edit
-                            </a>
+                                <form action="{{ route('owner.users.destroy', $user) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
 
-                            <form action="{{ route('owner.users.destroy', $user) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-
-                                <button
-                                    onclick="return confirm('Hapus user ini?')"
-                                    class="text-red-600 hover:text-red-800 dark:hover:text-red-400 font-semibold">
-                                    Hapus
-                                </button>
-                            </form>
-
+                                    <button
+                                        onclick="return confirm('Hapus user ini?')"
+                                        class="text-red-600 hover:text-red-800 dark:hover:text-red-400 font-semibold">
+                                        Hapus
+                                    </button>
+                                </form>
                         </div>
                     </td>
 

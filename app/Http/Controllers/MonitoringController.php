@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AppSetting;
+use App\Models\SetoranHistory;
+use App\Models\WeeklyProgress;
 use Illuminate\Http\Request;
-use App\Models\WeeklyProgress; // ← ini yang kurang
 
 class MonitoringController extends Controller
 {
@@ -11,17 +13,32 @@ class MonitoringController extends Controller
     {
         $staff = auth()->user();
         $search = trim((string) $request->query('search', ''));
-        $currentWeekNum = ((int) now()->weekOfYear - 1) % 52 + 1;
-
         $users = $staff->monitoredUsers()
-            ->with(['weeklyProgress', 'savingPlan'])
+            ->with(['weeklyProgress', 'savingPlan', 'transaksis'])
             ->when($search !== '', function ($query) use ($search) {
                 $query->where('name', 'like', '%' . $search . '%');
             })
             ->get()
-            ->map(function ($user) use ($currentWeekNum) {
+            ->map(function ($user) {
+                $currentWeekNum = $this->currentProgramWeek($user);
                 $done = $user->weeklyProgress->where('is_checked', true)->count();
                 $user->progress_percent = round(($done / 52) * 100);
+                $user->current_week_num = $currentWeekNum;
+                $user->has_started_saving = $currentWeekNum > 0;
+                $user->has_completed_saving = $done >= 52;
+                $user->paid_transfer_weeks = $user->transaksis
+                    ->whereIn('transaction_status', ['settlement', 'capture'])
+                    ->flatMap(function ($transaksi) {
+                        $payload = $transaksi->payment_payload ?? [];
+                        $metadata = $payload['metadata'] ?? [];
+                        $startWeek = (int) ($metadata['start_week'] ?? $transaksi->week_number ?? 1);
+                        $endWeek = (int) ($metadata['end_week'] ?? $startWeek);
+
+                        return range($startWeek, $endWeek);
+                    })
+                    ->unique()
+                    ->values()
+                    ->all();
 
                 $lastChecked = $user->weeklyProgress
                     ->where('is_checked', true)
@@ -32,15 +49,29 @@ class MonitoringController extends Controller
                 $lastWeek = $lastChecked?->week_number;
                 $user->last_paid_week = $lastWeek;
                 $user->weeks_ago = $lastWeek
-                    ? ($currentWeekNum >= $lastWeek
-                        ? ($currentWeekNum - $lastWeek)
-                        : ((52 - $lastWeek) + $currentWeekNum))
-                    : 52;
+                    ? max(0, $currentWeekNum - $lastWeek)
+                    : $currentWeekNum;
 
-                if ($user->weeks_ago >= 5) {
+                if ($user->has_started_saving && ! $user->has_completed_saving && $user->weeks_ago >= 10) {
+                    if ($user->is_active) {
+                        $user->forceFill(['is_active' => false])->save();
+                    }
+                    $user->is_active = false;
+                }
+
+                if ($user->has_completed_saving) {
+                    $user->payment_status = 'Selesai';
+                    $user->payment_status_class = 'complete';
+                } elseif (! $user->is_active && $user->weeks_ago >= 10) {
+                    $user->payment_status = 'Diberhentikan';
+                    $user->payment_status_class = 'critical';
+                } elseif (! $user->has_started_saving) {
+                    $user->payment_status = 'Belum Dimulai';
+                    $user->payment_status_class = 'warning';
+                } elseif ($user->weeks_ago >= 7) {
                     $user->payment_status = 'Kritis';
                     $user->payment_status_class = 'critical';
-                } elseif ($user->weeks_ago >= 2) {
+                } elseif ($user->weeks_ago >= 4) {
                     $user->payment_status = 'Waspada';
                     $user->payment_status_class = 'warning';
                 } else {
@@ -51,12 +82,14 @@ class MonitoringController extends Controller
                 return $user;
             });
 
+        $currentWeekNum = (int) ($users->max('current_week_num') ?? 1);
+
         return view('staff.monitoring.index', compact('users', 'search', 'currentWeekNum'));
     }
 
     public function toggleWeek(Request $request)
     {
-        WeeklyProgress::updateOrCreate(
+        $progress = WeeklyProgress::updateOrCreate(
             [
                 'user_id'     => $request->user_id,
                 'week_number' => $request->week_number,
@@ -67,6 +100,52 @@ class MonitoringController extends Controller
             ]
         );
 
-        return redirect()->back(); // pakai redirect karena form biasa (bukan AJAX)
+        if ((bool) $request->is_checked) {
+            SetoranHistory::create([
+                'user_id' => $request->user_id,
+                'staff_id' => auth()->id(),
+                'transaksi_id' => null,
+                'week_number' => $request->week_number,
+                'method' => 'manual',
+                'action_type' => 'manual_check',
+                'recorded_at' => $progress->updated_at ?? now(),
+                'source_label' => 'Checklist manual staff',
+            ]);
+        } else {
+            SetoranHistory::create([
+                'user_id' => $request->user_id,
+                'staff_id' => auth()->id(),
+                'transaksi_id' => null,
+                'week_number' => $request->week_number,
+                'method' => 'manual',
+                'action_type' => 'manual_uncheck',
+                'recorded_at' => $progress->updated_at ?? now(),
+                'source_label' => 'Checklist manual dibatalkan',
+            ]);
+        }
+
+        return redirect()->back();
+    }
+
+    private function currentProgramWeek($user): int
+    {
+        $startedAt = $this->globalSavingStartDate();
+
+        if (! $startedAt || $startedAt->isFuture()) {
+            return 0;
+        }
+
+        $elapsedWeeks = (int) floor(
+            $startedAt->startOfDay()->diffInWeeks(now()->startOfDay())
+        );
+
+        return min(52, max(1, $elapsedWeeks + 1));
+    }
+
+    private function globalSavingStartDate(): ?\Illuminate\Support\Carbon
+    {
+        $value = AppSetting::getValue('global_saving_started_at');
+
+        return $value ? now()->parse($value) : null;
     }
 }
