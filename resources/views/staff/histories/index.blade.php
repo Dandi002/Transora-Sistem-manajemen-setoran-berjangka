@@ -276,26 +276,5 @@
 </div>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    if (window.jQuery && document.getElementById('setoran-history-table')) {
-        window.jQuery('#setoran-history-table').DataTable({
-            pageLength: 10,
-            order: [[5, 'desc'], [6, 'desc']],
-            language: {
-                search: 'Cari di tabel:',
-                lengthMenu: 'Tampilkan _MENU_ data',
-                info: 'Menampilkan _START_ sampai _END_ dari _TOTAL_ data',
-                paginate: {
-                    previous: 'Sebelumnya',
-                    next: 'Berikutnya'
-                },
-                zeroRecords: 'Data tidak ditemukan',
-                infoEmpty: 'Belum ada data',
-                infoFiltered: '(difilter dari _MAX_ data)'
-            }
-        });
-    }
-});
-</script>
+
 @endsection

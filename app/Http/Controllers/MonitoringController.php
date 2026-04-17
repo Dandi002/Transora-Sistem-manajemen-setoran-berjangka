@@ -22,11 +22,9 @@ class MonitoringController extends Controller
             ->map(function ($user) {
                 $currentWeekNum = $this->currentProgramWeek($user);
                 $done = $user->weeklyProgress->where('is_checked', true)->count();
-                $user->progress_percent = round(($done / 52) * 100);
-                $user->current_week_num = $currentWeekNum;
-                $user->has_started_saving = $currentWeekNum > 0;
-                $user->has_completed_saving = $done >= 52;
-                $user->paid_transfer_weeks = $user->transaksis
+                $hasStartedSaving = $currentWeekNum > 0;
+                $hasCompletedSaving = $done >= 52;
+                $paidTransferWeeks = $user->transaksis
                     ->whereIn('transaction_status', ['settlement', 'capture'])
                     ->flatMap(function ($transaksi) {
                         $payload = $transaksi->payment_payload ?? [];
@@ -47,31 +45,38 @@ class MonitoringController extends Controller
                     ->first();
 
                 $lastWeek = $lastChecked?->week_number;
-                $user->last_paid_week = $lastWeek;
-                $user->weeks_ago = $lastWeek
+                $weeksAgo = $lastWeek
                     ? max(0, $currentWeekNum - $lastWeek)
                     : $currentWeekNum;
 
-                if ($user->has_started_saving && ! $user->has_completed_saving && $user->weeks_ago >= 10) {
+                if ($hasStartedSaving && ! $hasCompletedSaving && $weeksAgo >= 10) {
                     if ($user->is_active) {
-                        $user->forceFill(['is_active' => false])->save();
+                        $user->update(['is_active' => false]);
                     }
                     $user->is_active = false;
                 }
 
-                if ($user->has_completed_saving) {
+                $user->progress_percent = round(($done / 52) * 100);
+                $user->current_week_num = $currentWeekNum;
+                $user->has_started_saving = $hasStartedSaving;
+                $user->has_completed_saving = $hasCompletedSaving;
+                $user->paid_transfer_weeks = $paidTransferWeeks;
+                $user->last_paid_week = $lastWeek;
+                $user->weeks_ago = $weeksAgo;
+
+                if ($hasCompletedSaving) {
                     $user->payment_status = 'Selesai';
                     $user->payment_status_class = 'complete';
-                } elseif (! $user->is_active && $user->weeks_ago >= 10) {
+                } elseif (! $user->is_active && $weeksAgo >= 10) {
                     $user->payment_status = 'Diberhentikan';
                     $user->payment_status_class = 'critical';
-                } elseif (! $user->has_started_saving) {
+                } elseif (! $hasStartedSaving) {
                     $user->payment_status = 'Belum Dimulai';
                     $user->payment_status_class = 'warning';
-                } elseif ($user->weeks_ago >= 7) {
+                } elseif ($weeksAgo >= 7) {
                     $user->payment_status = 'Kritis';
                     $user->payment_status_class = 'critical';
-                } elseif ($user->weeks_ago >= 4) {
+                } elseif ($weeksAgo >= 4) {
                     $user->payment_status = 'Waspada';
                     $user->payment_status_class = 'warning';
                 } else {

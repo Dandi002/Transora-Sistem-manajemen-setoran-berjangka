@@ -179,7 +179,7 @@
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y dark:divide-gray-700 dark:bg-gray-800">
-                    @forelse ($histories as $history)
+                    @foreach ($histories as $history)
                         <tr class="text-gray-700 dark:text-gray-400">
                             <td class="px-4 py-3 text-sm font-semibold">{{ $history->user?->name ?? '-' }}</td>
                             <td class="px-4 py-3 text-sm">Minggu ke-{{ $history->week_number }}</td>
@@ -199,13 +199,7 @@
                             <td class="px-4 py-3 text-sm">{{ optional($history->recorded_at)->translatedFormat('d F Y') }}</td>
                             <td class="px-4 py-3 text-sm">{{ optional($history->recorded_at)->format('H:i:s') }}</td>
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="7" class="px-4 py-3 text-center text-gray-500 dark:text-gray-400">
-                                Belum ada riwayat transaksi yang tercatat.
-                            </td>
-                        </tr>
-                    @endforelse
+                    @endforeach
                 </tbody>
             </table>
         </div>
@@ -213,26 +207,5 @@
 </div>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    if (window.jQuery && document.getElementById('owner-transaction-history-table')) {
-        window.jQuery('#owner-transaction-history-table').DataTable({
-            pageLength: 10,
-            order: [[5, 'desc'], [6, 'desc']],
-            language: {
-                search: 'Cari di tabel:',
-                lengthMenu: 'Tampilkan _MENU_ data',
-                info: 'Menampilkan _START_ sampai _END_ dari _TOTAL_ data',
-                paginate: {
-                    previous: 'Sebelumnya',
-                    next: 'Berikutnya'
-                },
-                zeroRecords: 'Data tidak ditemukan',
-                infoEmpty: 'Belum ada data',
-                infoFiltered: '(difilter dari _MAX_ data)'
-            }
-        });
-    }
-});
-</script>
+
 @endsection

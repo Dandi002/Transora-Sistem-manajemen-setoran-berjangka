@@ -81,7 +81,7 @@
                             <x-input-label for="phone" value="Nomor HP" />
                             <x-text-input
                                 id="phone"
-                                type="text"
+                                type="number"
                                 name="phone"
                                 :value="old('phone')"
                                 required

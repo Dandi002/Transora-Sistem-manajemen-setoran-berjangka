@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\View\View;
+use App\Models\Transaksi;
+
 
 class DashboardController extends Controller
 {
@@ -65,6 +67,16 @@ class DashboardController extends Controller
                     ->where('is_checked', true);
             })
             ->count();
+            
+            $staff = auth()->user();
+
+$totalSaldoDiterima = Transaksi::query()
+    ->whereIn('transaction_status', ['settlement', 'capture'])
+    ->whereHas('user', function ($query) use ($staff) {
+        $query->where('assigned_staff_id', $staff->id);
+    })
+    ->sum('gross_amount');
+
 
         $belumSetorMingguIni = max(0, $totalUserDipegang - $sudahSetorMingguIni);
         $kapasitasMaksimal = 50;
@@ -80,8 +92,11 @@ class DashboardController extends Controller
                 'belum_setor_minggu_ini' => $belumSetorMingguIni,
                 'kapasitas_terpakai' => $kapasitasTerpakai,
                 'kapasitas_maksimal' => $kapasitasMaksimal,
+                'total_saldo_diterima' => $totalSaldoDiterima,
+
             ],
         ]);
+        
     }
 }
 
